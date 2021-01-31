@@ -31,7 +31,9 @@ exports.handler = function(event, context, callback) {
     } = process.env
 
     const body = JSON.parse(event.body)
-    const message = body.message
+    const message = Object.keys(body).map((k) => {
+      return `${k}: ${body[k]}`
+    }).join("<br><br>");
 
     client.setApiKey(SENDGRID_API_KEY)
 
