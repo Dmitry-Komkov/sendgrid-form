@@ -1,35 +1,51 @@
-const sgMail = require('@sendgrid/mail')
-const { SENDGRID_API_KEY, SENDGRID_TO_EMAIL } = process.env
+const client = require("@sendgrid/mail")
 
-exports.handler =  async (event, context, callback) => {
+function sendEmail(client, message, senderEmail, senderName, sendTo) {
+    return new Promise((fulfill, reject) => {
+        const data = {
+            from: {
+                email: senderEmail,
+                name: senderName
+            },
+            subject: 'Заявка с сайта',
+            text: 'and easy to do anywhere, even with Node.js',
+            to: sendTo,
+            html: `${message}`
 
-    const payload = JSON.parse(event.body)
-    const { email, info } = payload
+        }
 
-    sgMail.setApiKey(SENDGRID_API_KEY)
+        client
+            .send(data)
+            .then(([response, body]) => {
+                fulfill(response)
+            })
+            .catch(error => reject(error))
+    })
+}
 
-    const body = Object.keys(payload).map((k) => {
-        return `${k}: ${payload[k]}`
+exports.handler = function(event, context, callback) {
+    const {
+        SENDGRID_API_KEY,
+        SENDGRID_SENDER_EMAIL,
+        SENDGRID_SENDER_NAME,
+        SENDGRID_TO_EMAIL
+    } = process.env
+
+    const body = JSON.parse(event.body)
+
+    const message = Object.keys(body).map((k) => {
+      return `${k}: ${body[k]}`
     }).join("<br><br>");
 
-    const msg = {
-        to: SENDGRID_TO_EMAIL,
-        from: email,
-        subject: info ? info : 'Contact Form Submission',
-        html: body,
-    };
+    client.setApiKey(SENDGRID_API_KEY)
 
-    try{
-        await sgMail.send(msg)
-        
-        return {
-            statusCode: 200,
-            body: "Message sent"
-        }
-    } catch(e){
-        return {
-            statusCode: e.code,
-            body: e.message
-        }
-    }
-};
+    sendEmail(
+        client,
+        message,
+        SENDGRID_SENDER_EMAIL,
+        SENDGRID_SENDER_NAME,
+        SENDGRID_TO_EMAIL
+    )
+    .then(response => callback(null, { statusCode: response.statusCode }))
+    .catch(err => callback(err, null))
+}
