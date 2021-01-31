@@ -24,14 +24,19 @@ export default function ContactForm() {
 
   const handleSubmit = e => {
     let { name, email, info } = formState
-    let data = { name, email, info }
-    axios.post(endpoints.contact, JSON.stringify(data)).then(response => {
-      if (response.status !== 200) {
-        handleError()
-      } else {
-        handleSuccess()
-      }
-    })
+    // let data = { name, email, info }
+    axios.post(
+      endpoints.contact,
+      {
+        message: `<br>` + "Name: " + name + `<br>` + "Email: " + email + `<br>` + "More Information: " + info + `<br>`
+      })
+      .then(response => {
+        if (response.status !== 200) {
+          handleError()
+        } else {
+          handleSuccess()
+        }
+      })
     e.preventDefault()
   }
 
