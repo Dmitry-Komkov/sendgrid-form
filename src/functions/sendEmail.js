@@ -30,17 +30,14 @@ exports.handler = function(event, context, callback) {
         SENDGRID_TO_EMAIL
     } = process.env
 
-    const payload = JSON.parse(event.body)
-
-    const body = Object.keys(payload).map((k) => {
-      return `${k}: ${payload[k]}`
-    }).join("<br><br>");
+    const body = JSON.parse(event.body)
+    const message = body.message
 
     client.setApiKey(SENDGRID_API_KEY)
 
     sendEmail(
         client,
-        body,
+        message,
         SENDGRID_SENDER_EMAIL,
         SENDGRID_SENDER_NAME,
         SENDGRID_TO_EMAIL
