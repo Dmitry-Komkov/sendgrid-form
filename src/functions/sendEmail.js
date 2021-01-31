@@ -1,45 +1,35 @@
-const client = require("@sendgrid/mail")
+const sgMail = require('@sendgrid/mail')
+const { SENDGRID_API_KEY, SENDGRID_TO_EMAIL } = process.env
 
-function sendEmail(client, message, senderEmail, senderName) {
-  return new Promise((fulfill, reject) => {
-      const data = {
-          from: {
-              email: senderEmail,
-              name: senderName
-          },
-          subject: 'SendGrid Form',
-          to: 'detroit-2010@yandex.ru',
-          html: `New form submission<br/> ${message}`
+exports.handler =  async (event, context, callback) => {
 
-      }
+    const payload = JSON.parse(event.body)
+    const { email, info } = payload
 
-      client
-          .send(data)
-          .then(([response, body]) => {
-              fulfill(response)
-          })
-          .catch(error => reject(error))
-  })
-}
+    sgMail.setApiKey(SENDGRID_API_KEY)
 
-exports.handler = function(event, context, callback) {
-  const {
-      SENDGRID_API_KEY,
-      SENDGRID_SENDER_EMAIL,
-      SENDGRID_SENDER_NAME
-  } = process.env
+    const body = Object.keys(payload).map((k) => {
+        return `${k}: ${payload[k]}`
+    }).join("<br><br>");
 
-  const body = JSON.parse(event.body)
-  const message = body.message
+    const msg = {
+        to: SENDGRID_TO_EMAIL,
+        from: email,
+        subject: info ? info : 'Contact Form Submission',
+        html: body,
+    };
 
-  client.setApiKey(SENDGRID_API_KEY)
-
-  sendEmail(
-      client,
-      message,
-      SENDGRID_SENDER_EMAIL,
-      SENDGRID_SENDER_NAME
-  )
-  .then(response => callback(null, { statusCode: response.statusCode }))
-  .catch(err => callback(err, null))
-}
+    try{
+        await sgMail.send(msg)
+        
+        return {
+            statusCode: 200,
+            body: "Message sent"
+        }
+    } catch(e){
+        return {
+            statusCode: e.code,
+            body: e.message
+        }
+    }
+};
