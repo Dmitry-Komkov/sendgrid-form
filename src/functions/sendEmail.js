@@ -11,7 +11,6 @@ function sendEmail(client, message, senderEmail, senderName, sendTo) {
             text: 'and easy to do anywhere, even with Node.js',
             to: sendTo,
             html: `${message}`
-
         }
 
         client
@@ -31,17 +30,17 @@ exports.handler = function(event, context, callback) {
         SENDGRID_TO_EMAIL
     } = process.env
 
-    const body = JSON.parse(event.body)
+    const payload = JSON.parse(event.body)
 
-    const message = Object.keys(body).map((k) => {
-      return `${k}: ${body[k]}`
+    const body = Object.keys(payload).map((k) => {
+      return `${k}: ${payload[k]}`
     }).join("<br><br>");
 
     client.setApiKey(SENDGRID_API_KEY)
 
     sendEmail(
         client,
-        message,
+        body,
         SENDGRID_SENDER_EMAIL,
         SENDGRID_SENDER_NAME,
         SENDGRID_TO_EMAIL
