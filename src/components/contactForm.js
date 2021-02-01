@@ -13,6 +13,7 @@ export default function ContactForm() {
     name: '',
     email: '',
     info: '',
+    file: ''
   })
 
   const handleChange = e => {
@@ -24,12 +25,11 @@ export default function ContactForm() {
 
   const handleSubmit = e => {
     let { name, email, info } = formState
-    // let data = { name, email, info }
+    let data = { name, email, info }
     axios.post(
       endpoints.contact,
-      {
-        message: `<br>` + "Name: " + name + `<br>` + "Email: " + email + `<br>` + "More Information: " + info + `<br>`
-      })
+      data
+      )
       .then(response => {
         if (response.status !== 200) {
           handleError()
@@ -71,6 +71,10 @@ export default function ContactForm() {
         <div className="inputBox">
           <label required htmlFor="info">More Information:</label>
           <textarea id="info" name="info" onChange={handleChange} ></textarea>
+        </div>
+        <div className="inputBox">
+          <label required htmlFor="file">Выбрать:</label>
+          <input type="file" name="file" id="file" onChange={handleChange}/>
         </div>
         <div>
           <button type="submit">Отправить</button>
