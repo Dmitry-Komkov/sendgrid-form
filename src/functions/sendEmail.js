@@ -38,9 +38,9 @@ exports.handler =  async (event, context, callback) => {
         html: body,
         attachment: {
             content: attachment,
-            // filename: "чек.jpg",
-            // type: "image/jpeg",
-            // disposition: "attachment"
+            filename: "Скан договора Лесное дело Бегетов АН.pdf",
+            type: "application/pdf",
+            disposition: "attachment"
         }
     };
 
