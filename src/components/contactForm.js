@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import './contactForm.css'
 
 const axios = require("axios")
@@ -16,6 +16,31 @@ export default function ContactForm() {
     file: ''
   })
 
+  const fileInput = useRef('')
+
+
+  const fileChange = () => {
+    const file = fileInput.current.files[0]
+    const reader = new FileReader()
+
+    let fileBase64 = null
+
+    reader.addEventListener('loadend', () => {
+      fileBase64 = reader.result
+      console.log(fileBase64)
+      setFormState({
+        ...formState,
+        file: fileBase64,
+      })
+    })
+
+    if (file) {
+      reader.readAsDataURL(file);
+    } else {
+      console.log('Nothing added')
+    }
+  }
+
   const handleChange = e => {
     setFormState({
       ...formState,
@@ -24,8 +49,9 @@ export default function ContactForm() {
   }
 
   const handleSubmit = e => {
-    let { name, email, info } = formState
-    let data = { name, email, info }
+    let { name, email, info, file } = formState
+    let data = { name, email, info, file }
+    console.log(data)
     axios.post(
       endpoints.contact,
       data
@@ -56,7 +82,6 @@ export default function ContactForm() {
     alert('Your message could not be sent. Sorry about that.')
   }
 
-
   return (
     <>
       <form action="" onSubmit={handleSubmit}>
@@ -74,7 +99,7 @@ export default function ContactForm() {
         </div>
         <div className="inputBox">
           <label required htmlFor="file">Выбрать:</label>
-          <input type="file" name="file" id="file" onChange={handleChange}/>
+          <input ref={fileInput} type="file" name="file" id="file" onChange={fileChange}/>
         </div>
         <div>
           <button type="submit">Отправить</button>

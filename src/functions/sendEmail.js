@@ -1,49 +1,57 @@
-const client = require("@sendgrid/mail")
+const sgMail = require('@sendgrid/mail')
+const {
+    SENDGRID_API_KEY,
+    SENDGRID_SENDER_EMAIL,
+    SENDGRID_SENDER_NAME,
+    SENDGRID_TO_EMAIL
+} = process.env
 
-function sendEmail(client, message, senderEmail, senderName, sendTo) {
-    return new Promise((fulfill, reject) => {
-        const data = {
-            from: {
-                email: senderEmail,
-                name: senderName
-            },
-            subject: 'Заявка с сайта',
-            text: 'and easy to do anywhere, even with Node.js',
-            to: sendTo,
-            html: `${message}`
+exports.handler =  async (event, context, callback) => {
+
+    const payload = JSON.parse(event.body)
+
+    sgMail.setApiKey(SENDGRID_API_KEY)
+
+    // const body = Object.keys(payload).map((k) => {
+    //     return `${k}: ${payload[k]}`
+    // }).join("<br><br>");
+
+    const attachment = payload[file]
+
+    const body = `
+        Имя: ${payload[name]} <br>
+        Телефон: ${payload[email]} <br>
+        Инфо: ${payload[info]} <br>
+    `
+
+    const msg = {
+        to: SENDGRID_TO_EMAIL,
+        from: {
+            email: SENDGRID_SENDER_EMAIL,
+            name: SENDGRID_SENDER_NAME
+        },
+        subject: 'Новая заявка с сайта fasad-stroi.com',
+        html: body,
+        attachment: {
+            content: attachment,
+            filename: "чек.jpg",
+            type: "image/jpeg",
+            disposition: "attachment"
         }
+    };
 
-        client
-            .send(data)
-            .then(([response, body]) => {
-                fulfill(response)
-            })
-            .catch(error => reject(error))
-    })
-}
-
-exports.handler = function(event, context, callback) {
-    const {
-        SENDGRID_API_KEY,
-        SENDGRID_SENDER_EMAIL,
-        SENDGRID_SENDER_NAME,
-        SENDGRID_TO_EMAIL
-    } = process.env
-
-    const body = JSON.parse(event.body)
-    const message = Object.keys(body).map((k) => {
-      return `${k}: ${body[k]}`
-    }).join("<br><br>");
-
-    client.setApiKey(SENDGRID_API_KEY)
-
-    sendEmail(
-        client,
-        message,
-        SENDGRID_SENDER_EMAIL,
-        SENDGRID_SENDER_NAME,
-        SENDGRID_TO_EMAIL
-    )
-    .then(response => callback(null, { statusCode: response.statusCode }))
-    .catch(err => callback(err, null))
-}
+    try{
+        await sgMail.send(msg)
+        
+        return {
+            statusCode: 200,
+            body: "Message sent"
+        }
+    } catch(e){
+        const statusCode = typeof e.code === 'number' ? e.code : 500;
+        return {
+            statusCode,
+            body: e.message
+        }
+    }
+};
