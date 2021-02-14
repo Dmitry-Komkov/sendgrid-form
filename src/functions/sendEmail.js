@@ -18,11 +18,15 @@ exports.handler =  async (event, context, callback) => {
 
     const attachment = payload[file]
 
+    console.log(attachment)
+
     const body = `
         Имя: ${payload[name]} <br>
         Телефон: ${payload[email]} <br>
         Инфо: ${payload[info]} <br>
     `
+
+    console.log(body)
 
     const msg = {
         to: SENDGRID_TO_EMAIL,
@@ -34,9 +38,9 @@ exports.handler =  async (event, context, callback) => {
         html: body,
         attachment: {
             content: attachment,
-            filename: "чек.jpg",
-            type: "image/jpeg",
-            disposition: "attachment"
+            // filename: "чек.jpg",
+            // type: "image/jpeg",
+            // disposition: "attachment"
         }
     };
 
