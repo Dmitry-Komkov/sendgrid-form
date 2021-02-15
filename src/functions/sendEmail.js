@@ -38,14 +38,14 @@ exports.handler =  async (event, context, callback) => {
         },
         subject: 'Новая заявка с сайта fasad-stroi.com',
         html: body,
-        attachments: [
-            {
-              content: attachment,
-              filename: "scan.pdf",
-              type: "application/pdf",
-              disposition: "attachment"
-            }
-        ]
+        // attachments: [
+        //     {
+        //       content: attachment,
+        //       filename: "scan.pdf",
+        //       type: "application/pdf",
+        //       disposition: "attachment"
+        //     }
+        // ]
     };
 
     try{
