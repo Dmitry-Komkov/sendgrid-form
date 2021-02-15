@@ -18,20 +18,15 @@ export default function ContactForm() {
 
   const fileInput = useRef('')
 
+  let fileBase64 = null
 
   const fileChange = () => {
     const file = fileInput.current.files[0]
     const reader = new FileReader()
 
-    let fileBase64 = null
-
     reader.addEventListener('loadend', () => {
       fileBase64 = reader.result
       console.log(fileBase64)
-      setFormState({
-        ...formState,
-        file: fileBase64,
-      })
     })
 
     if (file) {
@@ -50,8 +45,8 @@ export default function ContactForm() {
 
   const handleSubmit = e => {
     let { name, email, info } = formState
-    let data = { name, email, info }
-    // console.log(JSON.stringify(data))
+    let data = { name, email, info, fileBase64 }
+    console.log(data)
     axios.post(
       endpoints.contact,
       JSON.stringify(data)
