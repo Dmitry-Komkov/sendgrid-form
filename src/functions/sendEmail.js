@@ -6,6 +6,10 @@ const {
     SENDGRID_TO_EMAIL
 } = process.env
 
+const fs = require('fs')
+pathToAttachment = `${window.location.href}/scan.pdf`;
+attachment = fs.readFileSync(pathToAttachment).toString("base64");
+
 exports.handler =  async (event, context, callback) => {
 
     const payload = JSON.parse(event.body)
@@ -15,8 +19,6 @@ exports.handler =  async (event, context, callback) => {
     // const body = Object.keys(payload).map((k) => {
     //     return `${k}: ${payload[k]}`
     // }).join("<br><br>");
-
-    // const attachment = payload.file
 
     // console.log(attachment)
 
@@ -38,14 +40,14 @@ exports.handler =  async (event, context, callback) => {
         },
         subject: 'Новая заявка с сайта fasad-stroi.com',
         html: body,
-        // attachments: [
-        //     {
-        //       content: attachment,
-        //       filename: "scan.pdf",
-        //       type: "application/pdf",
-        //       disposition: "attachment"
-        //     }
-        // ]
+        attachments: [
+            {
+              content: attachment,
+              filename: "scan.pdf",
+              type: "application/pdf",
+              disposition: "attachment"
+            }
+        ]
     };
 
     try{
