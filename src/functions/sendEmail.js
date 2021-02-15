@@ -12,13 +12,13 @@ exports.handler =  async (event, context, callback) => {
 
     sgMail.setApiKey(SENDGRID_API_KEY)
 
-    // const body = Object.keys(payload).map((k) => {
-    //     return `${k}: ${payload[k]}`
-    // }).join("<br><br>");
+    const body = Object.keys(payload).map((k) => {
+        return `${k}: ${payload[k]}`
+    }).join("<br><br>");
 
-    const attachment = payload.file
+    // const attachment = payload.file
 
-    console.log(attachment)
+    // console.log(attachment)
 
     // const body = `
     //     Имя: ${payload['name']} <br>
@@ -26,7 +26,7 @@ exports.handler =  async (event, context, callback) => {
     //     Инфо: ${payload['info']} <br>
     // `
 
-    const body = payload.name
+    // const body = payload.name
 
     console.log(body)
 
@@ -38,12 +38,6 @@ exports.handler =  async (event, context, callback) => {
         },
         subject: 'Новая заявка с сайта fasad-stroi.com',
         html: body,
-        attachment: {
-            content: attachment,
-            filename: "scan.pdf",
-            type: "application/pdf",
-            disposition: "attachment"
-        }
     };
 
     try{

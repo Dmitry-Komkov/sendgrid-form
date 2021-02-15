@@ -49,9 +49,9 @@ export default function ContactForm() {
   }
 
   const handleSubmit = e => {
-    let { name, email, info, file } = formState
-    let data = { name, email, info, file }
-    console.log(JSON.stringify(data))
+    let { name, email, info } = formState
+    let data = { name, email, info }
+    // console.log(JSON.stringify(data))
     axios.post(
       endpoints.contact,
       JSON.stringify(data)
