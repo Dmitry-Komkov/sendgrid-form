@@ -51,10 +51,10 @@ export default function ContactForm() {
   const handleSubmit = e => {
     let { name, email, info, file } = formState
     let data = { name, email, info, file }
-    console.log(data)
+    console.log(JSON.stringify(data))
     axios.post(
       endpoints.contact,
-      data
+      JSON.stringify(data)
       )
       .then(response => {
         if (response.status !== 200) {
