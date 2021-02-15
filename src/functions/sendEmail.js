@@ -6,6 +6,11 @@ const {
     SENDGRID_TO_EMAIL
 } = process.env
 
+const fs = require("fs");
+
+pathToAttachment = `${__dirname}/src/images/gatsby-icon.png`;
+attachment = fs.readFileSync(pathToAttachment).toString("base64");
+
 exports.handler =  async (event, context, callback) => {
 
     const payload = JSON.parse(event.body)
@@ -38,6 +43,14 @@ exports.handler =  async (event, context, callback) => {
         },
         subject: 'Новая заявка с сайта fasad-stroi.com',
         html: body,
+        attachments: [
+            {
+              content: attachment,
+              filename: "gatsby-icon.png",
+              type: "image/png",
+              disposition: "attachment"
+            }
+        ]
     };
 
     try{
