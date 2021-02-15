@@ -16,14 +16,14 @@ exports.handler =  async (event, context, callback) => {
     //     return `${k}: ${payload[k]}`
     // }).join("<br><br>");
 
-    const attachment = payload[file]
+    const attachment = payload['file']
 
     console.log(attachment)
 
     const body = `
-        Имя: ${payload[name]} <br>
-        Телефон: ${payload[email]} <br>
-        Инфо: ${payload[info]} <br>
+        Имя: ${payload['name']} <br>
+        Телефон: ${payload['email']} <br>
+        Инфо: ${payload['info']} <br>
     `
 
     console.log(body)
