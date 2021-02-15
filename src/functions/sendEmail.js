@@ -6,11 +6,6 @@ const {
     SENDGRID_TO_EMAIL
 } = process.env
 
-const fs = require("fs");
-
-pathToAttachment = `${__dirname}/src/images/gatsby-icon.png`;
-attachment = fs.readFileSync(pathToAttachment).toString("base64");
-
 exports.handler =  async (event, context, callback) => {
 
     const payload = JSON.parse(event.body)
@@ -21,7 +16,7 @@ exports.handler =  async (event, context, callback) => {
         return `${k}: ${payload[k]}`
     }).join("<br><br>");
 
-    // const attachment = payload.file
+    const attachment = payload.file
 
     // console.log(attachment)
 
@@ -46,8 +41,8 @@ exports.handler =  async (event, context, callback) => {
         attachments: [
             {
               content: attachment,
-              filename: "gatsby-icon.png",
-              type: "image/png",
+              filename: "scan.pdf",
+              type: "application/pdf",
               disposition: "attachment"
             }
         ]
